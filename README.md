@@ -111,4 +111,4 @@ Contributions are welcome! Please follow these guidelines:
 
 - **Organization**: Electrox Labs
 - **Lead Developer**: Aryan Singh
-- **Contact**: support@electroxlabs.com
+- **Contact**: electroxlabs@gmail.com
