@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Finexa.Core\Finexa.Core.csproj" />
+    <ProjectReference Include="..\Finexa.Domain\Finexa.Domain.csproj" />
+    <ProjectReference Include="..\Finexa.Services\Finexa.Services.csproj" />
+    <ProjectReference Include="..\Finexa.Infrastructure\Finexa.Infrastructure.csproj" />
+    <ProjectReference Include="..\Finexa.Shared\Finexa.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

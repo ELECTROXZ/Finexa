@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Finexa.Core\Finexa.Core.csproj" />
+    <ProjectReference Include="..\Finexa.Domain\Finexa.Domain.csproj" />
+    <ProjectReference Include="..\Finexa.Infrastructure\Finexa.Infrastructure.csproj" />
+    <ProjectReference Include="..\Finexa.Shared\Finexa.Shared.csproj" />
+    <ProjectReference Include="..\Finexa.Reporting\Finexa.Reporting.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

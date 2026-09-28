@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Finexa_App.Views.PartiesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:entities="using:Finexa.Domain.Entities"
+    xmlns:local="using:Finexa_App.Views"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!-- Header -->
+            <RowDefinition Height="Auto" /> <!-- Dashboard Cards -->
+            <RowDefinition Height="Auto" /> <!-- Toolbar -->
+            <RowDefinition Height="Auto" /> <!-- Filters -->
+            <RowDefinition Height="Auto" /> <!-- Undo Deleted banner -->
+            <RowDefinition Height="*" />    <!-- Content Area (Grid) -->
+            <RowDefinition Height="Auto" /> <!-- Footer / Pagination -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="4" Padding="24,16,24,8">
+            <TextBlock Text="Parties Directory" FontSize="28" FontWeight="SemiBold" />
+            <TextBlock Text="Manage Customers &amp; Suppliers, view profiles, track ledger balances and contacts" FontSize="13" Opacity="0.6" />
+        </StackPanel>
+
+        <!-- Dashboard Summary Cards -->
+        <Grid Grid.Row="1" Padding="24,8" ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Card 1: Total Customers -->
+            <Border Grid.Column="0" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Total Customers" FontSize="12" Opacity="0.7" />
+                    <TextBlock Text="{x:Bind ViewModel.TotalCustomers, Mode=OneWay}" FontSize="24" FontWeight="Bold" />
+                </StackPanel>
+            </Border>
+
+            <!-- Card 2: Total Suppliers -->
+            <Border Grid.Column="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Total Suppliers" FontSize="12" Opacity="0.7" />
+                    <TextBlock Text="{x:Bind ViewModel.TotalSuppliers, Mode=OneWay}" FontSize="24" FontWeight="Bold" />
+                </StackPanel>
+            </Border>
+
+            <!-- Card 3: Active Customers -->
+            <Border Grid.Column="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Active Customers" FontSize="12" Opacity="0.7" />
+                    <TextBlock Text="{x:Bind ViewModel.ActiveCustomersCount, Mode=OneWay}" FontSize="24" FontWeight="Bold" Foreground="LightGreen" />
+                </StackPanel>
+            </Border>
+
+            <!-- Card 4: Outstanding Receivables -->
+            <Border Grid.Column="3" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Outstanding Receivables" FontSize="12" Opacity="0.7" />
+                    <TextBlock Text="{x:Bind ViewModel.OutstandingReceivables, Mode=OneWay, Converter={StaticResource CurrencyFormatter}}" FontSize="20" FontWeight="Bold" Foreground="LightPink" />
+                </StackPanel>
+            </Border>
+
+            <!-- Card 5: Outstanding Payables -->
+            <Border Grid.Column="4" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="Outstanding Payables" FontSize="12" Opacity="0.7" />
+                    <TextBlock Text="{x:Bind ViewModel.OutstandingPayables, Mode=OneWay, Converter={StaticResource CurrencyFormatter}}" FontSize="20" FontWeight="Bold" Foreground="LightBlue" />
+                </StackPanel>
+            </Border>
+
+            <!-- Card 6: New Customers This Month -->
+            <Border Grid.Column="5" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="New Customers (MTD)" FontSize="12" Opacity="0.7" />
+                    <TextBlock Text="{x:Bind ViewModel.NewCustomersThisMonth, Mode=OneWay}" FontSize="24" FontWeight="Bold" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Toolbar -->
+        <Border Grid.Row="2" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1" Padding="24,8" Margin="0,8,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                    <!-- Actions -->
+                    <Button Click="NewCustomer_Click" Style="{ThemeResource AccentButtonStyle}" Padding="16,6">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE710;" FontSize="14" />
+                            <TextBlock Text="New Customer" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Click="NewSupplier_Click" Padding="16,6">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE710;" FontSize="14" />
+                            <TextBlock Text="New Supplier" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Click="Edit_Click" IsEnabled="{x:Bind local:PartiesPage.IsPartySelected(ViewModel.SelectedParty), Mode=OneWay}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE70F;" FontSize="14" />
+                            <TextBlock Text="Edit" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Command="{x:Bind ViewModel.DeletePartyCommand}" CommandParameter="{x:Bind ViewModel.SelectedParty, Mode=OneWay}" IsEnabled="{x:Bind local:PartiesPage.IsPartySelected(ViewModel.SelectedParty), Mode=OneWay}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE74D;" FontSize="14" />
+                            <TextBlock Text="Delete" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Click="ViewLedger_Click" IsEnabled="{x:Bind local:PartiesPage.IsPartySelected(ViewModel.SelectedParty), Mode=OneWay}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE8A1;" FontSize="14" />
+                            <TextBlock Text="View Ledger" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Command="{x:Bind ViewModel.DuplicatePartyCommand}" CommandParameter="{x:Bind ViewModel.SelectedParty, Mode=OneWay}" IsEnabled="{x:Bind local:PartiesPage.IsPartySelected(ViewModel.SelectedParty), Mode=OneWay}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE8C8;" FontSize="14" />
+                            <TextBlock Text="Duplicate" />
+                        </StackPanel>
+                    </Button>
+
+                    <AppBarSeparator />
+
+                    <Button Command="{x:Bind ViewModel.LoadPartiesCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE72C;" FontSize="14" />
+                            <TextBlock Text="Refresh" />
+                        </StackPanel>
+                    </Button>
+
+                    <DropDownButton Content="Export">
+                        <DropDownButton.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="Export to PDF" Click="ExportPdf_Click" Icon="Document" />
+                                <MenuFlyoutItem Text="Export list to Excel" Click="ExportExcel_Click" Icon="List" />
+                                <MenuFlyoutItem Text="Export list to CSV" Click="ExportCsv_Click" Icon="AllApps" />
+                            </MenuFlyout>
+                        </DropDownButton.Flyout>
+                    </DropDownButton>
+
+                    <DropDownButton Content="Import">
+                        <DropDownButton.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="Import Excel" Click="ImportExcel_Click" Icon="Document" />
+                                <MenuFlyoutItem Text="Import CSV" Click="ImportCsv_Click" Icon="AllApps" />
+                            </MenuFlyout>
+                        </DropDownButton.Flyout>
+                    </DropDownButton>
+                </StackPanel>
+
+                <!-- Search -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <TextBox Width="280" PlaceholderText="Search name, phone, GST, PAN, city..." Text="{x:Bind ViewModel.SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KeyDown="SearchTextBox_KeyDown" Header="" Margin="0" VerticalAlignment="Center">
+                        <TextBox.HeaderTemplate>
+                            <DataTemplate />
+                        </TextBox.HeaderTemplate>
+                    </TextBox>
+                    <Button Click="Search_Click">
+                        <FontIcon Glyph="&#xE721;" FontSize="12" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Filters Row -->
+        <Border Grid.Row="3" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Padding="24,8" BorderThickness="0,0,0,1" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}">
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <!-- Type Filter -->
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="Type:" VerticalAlignment="Center" FontSize="12" Opacity="0.8" />
+                    <ComboBox ItemsSource="{x:Bind ViewModel.PartyTypes}" SelectedItem="{x:Bind ViewModel.SelectedPartyType, Mode=TwoWay}" SelectionChanged="FilterComboBox_SelectionChanged" Width="130" />
+                </StackPanel>
+
+                <!-- Status Filter -->
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="Status:" VerticalAlignment="Center" FontSize="12" Opacity="0.8" />
+                    <ComboBox ItemsSource="{x:Bind ViewModel.StatusFilters}" SelectedItem="{x:Bind ViewModel.SelectedStatusFilter, Mode=TwoWay}" SelectionChanged="FilterComboBox_SelectionChanged" Width="120" />
+                </StackPanel>
+
+                <!-- Outstanding Filter -->
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="Ledger:" VerticalAlignment="Center" FontSize="12" Opacity="0.8" />
+                    <ComboBox ItemsSource="{x:Bind ViewModel.OutstandingFilters}" SelectedItem="{x:Bind ViewModel.SelectedOutstandingFilter, Mode=TwoWay}" SelectionChanged="FilterComboBox_SelectionChanged" Width="180" />
+                </StackPanel>
+
+                <!-- GST Filter -->
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="GST Registration:" VerticalAlignment="Center" FontSize="12" Opacity="0.8" />
+                    <ComboBox ItemsSource="{x:Bind ViewModel.GstFilters}" SelectedItem="{x:Bind ViewModel.SelectedGstFilter, Mode=TwoWay}" SelectionChanged="FilterComboBox_SelectionChanged" Width="150" />
+                </StackPanel>
+
+                <!-- Trash Bin Toggle -->
+                <CheckBox Content="Show Trash Bin" IsChecked="{x:Bind ViewModel.ShowTrash, Mode=TwoWay}" Checked="ShowTrash_Changed" Unchecked="ShowTrash_Changed" VerticalAlignment="Center" Margin="16,0,0,0" />
+            </StackPanel>
+        </Border>
+
+        <!-- Undo banner -->
+        <Border Grid.Row="4" Background="{ThemeResource SystemControlHighlightAccentBrush}" Visibility="{x:Bind ViewModel.IsUndoVisible, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" Padding="24,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{x:Bind ViewModel.UndoMessage, Mode=OneWay}" Foreground="White" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Content="Undo" Command="{x:Bind ViewModel.UndoDeleteCommand}" Background="Transparent" BorderBrush="White" BorderThickness="1" Foreground="White" Padding="16,4" />
+            </Grid>
+        </Border>
+
+        <!-- Main Grid Area -->
+        <Grid Grid.Row="5" Padding="24,16">
+            <controls:DataGrid x:Name="PartiesGrid" 
+                               ItemsSource="{x:Bind ViewModel.Parties, Mode=OneWay}" 
+                               SelectedItem="{x:Bind ViewModel.SelectedParty, Mode=TwoWay}"
+                               AutoGenerateColumns="False"
+                               GridLinesVisibility="Horizontal"
+                               CanUserSortColumns="True"
+                               CanUserReorderColumns="True"
+                               CanUserResizeColumns="True"
+                               Sorting="PartiesGrid_Sorting"
+                               DoubleTapped="PartiesGrid_DoubleTapped"
+                               Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                               BorderThickness="1"
+                               BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                               CornerRadius="8"
+                               RowBackground="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                               HeadersVisibility="Column"
+                               SelectionMode="Single">
+                <controls:DataGrid.Columns>
+                    <controls:DataGridTextColumn Header="Code" Binding="{Binding Code}" Tag="Code" IsReadOnly="True" Width="100" />
+                    <controls:DataGridTextColumn Header="Type" Binding="{Binding Type}" Tag="Type" IsReadOnly="True" Width="90" />
+                    <controls:DataGridTextColumn Header="Name" Binding="{Binding Name}" Tag="Name" IsReadOnly="True" Width="200" />
+                    <controls:DataGridTextColumn Header="Company/Display" Binding="{Binding DisplayName}" Tag="DisplayName" IsReadOnly="True" Width="180" />
+                    <controls:DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Tag="Phone" IsReadOnly="True" Width="120" />
+                    <controls:DataGridTextColumn Header="Email" Binding="{Binding Email}" Tag="Email" IsReadOnly="True" Width="180" />
+                    <controls:DataGridTextColumn Header="GST Number" Binding="{Binding GSTIN}" Tag="GST" IsReadOnly="True" Width="130" />
+                    <controls:DataGridTextColumn Header="PAN" Binding="{Binding PAN}" Tag="PAN" IsReadOnly="True" Width="110" />
+                    <controls:DataGridTextColumn Header="City" Binding="{Binding City}" Tag="City" IsReadOnly="True" Width="110" />
+                    <controls:DataGridTextColumn Header="State" Binding="{Binding State}" Tag="State" IsReadOnly="True" Width="110" />
+                    
+                    <controls:DataGridTemplateColumn Header="Opening Bal" Tag="Opening" Width="120">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="entities:Party">
+                                <TextBlock Text="{Binding OpeningBalance, Converter={StaticResource CurrencyFormatter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="0,0,12,0" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="Outstanding" Tag="Outstanding" Width="130">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="entities:Party">
+                                <TextBlock Text="{Binding OutstandingAmount, Converter={StaticResource CurrencyFormatter}}" 
+                                           HorizontalAlignment="Right" 
+                                           VerticalAlignment="Center" 
+                                           Padding="0,0,12,0" 
+                                           Foreground="{Binding OutstandingAmount, Converter={StaticResource BalanceColorConverter}}"
+                                           FontWeight="SemiBold" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTemplateColumn Header="Credit Limit" Tag="CreditLimit" Width="120">
+                        <controls:DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="entities:Party">
+                                <TextBlock Text="{Binding CreditLimit, Converter={StaticResource CurrencyFormatter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="0,0,12,0" />
+                            </DataTemplate>
+                        </controls:DataGridTemplateColumn.CellTemplate>
+                    </controls:DataGridTemplateColumn>
+
+                    <controls:DataGridTextColumn Header="Status" Binding="{Binding Status}" Tag="Status" IsReadOnly="True" Width="90" />
+                    <controls:DataGridTextColumn Header="Created Date" Binding="{Binding CreatedAt, Converter={StaticResource DateFormatConverter}}" Tag="Date" IsReadOnly="True" Width="120" />
+                </controls:DataGrid.Columns>
+
+                <controls:DataGrid.ContextFlyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="View Profile" Click="ContextView_Click" Icon="Contact" />
+                        <MenuFlyoutItem Text="Edit Details" Click="ContextEdit_Click" Icon="Edit" />
+                        <MenuFlyoutItem Text="View Ledger" Click="ContextLedger_Click" Icon="View" />
+                        <MenuFlyoutItem Text="Duplicate Party" Click="ContextDuplicate_Click" Icon="Copy" />
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem Text="Delete Party" Click="ContextDelete_Click" Icon="Delete" />
+                    </MenuFlyout>
+                </controls:DataGrid.ContextFlyout>
+            </controls:DataGrid>
+
+            <!-- Loading indicator -->
+            <ProgressRing IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="48" Height="48" />
+
+            <!-- Empty State -->
+            <StackPanel Visibility="{x:Bind ViewModel.IsListEmpty, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" 
+                        VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="12">
+                <FontIcon Glyph="&#xE77B;" FontSize="56" Opacity="0.5" />
+                <TextBlock Text="No Parties Found" FontSize="18" FontWeight="SemiBold" Opacity="0.7" HorizontalAlignment="Center" />
+                <TextBlock Text="Try clearing search keywords or adding a new customer / supplier." FontSize="13" Opacity="0.5" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Footer / Pagination -->
+        <Border Grid.Row="6" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Padding="24,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="Showing" VerticalAlignment="Center" Opacity="0.7" />
+                    <TextBlock Text="{x:Bind ViewModel.Parties.Count, Mode=OneWay}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <TextBlock Text="of" VerticalAlignment="Center" Opacity="0.7" />
+                    <TextBlock Text="{x:Bind ViewModel.TotalCount, Mode=OneWay}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <TextBlock Text="records" VerticalAlignment="Center" Opacity="0.7" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="12">
+                    <Button Command="{x:Bind ViewModel.PreviousPageCommand}" IsEnabled="{x:Bind ViewModel.HasPreviousPage, Mode=OneWay}">
+                        <FontIcon Glyph="&#xE76B;" FontSize="12" />
+                    </Button>
+                    <TextBlock Text="{x:Bind ViewModel.PageDisplay, Mode=OneWay}" VerticalAlignment="Center" FontSize="12" Opacity="0.7" />
+                    <Button Command="{x:Bind ViewModel.NextPageCommand}" IsEnabled="{x:Bind ViewModel.HasNextPage, Mode=OneWay}">
+                        <FontIcon Glyph="&#xE76A;" FontSize="12" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

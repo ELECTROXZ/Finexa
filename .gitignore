@@ -1,0 +1,72 @@
+## Visual Studio / .NET Core / WinUI 3 .gitignore
+
+# Build outputs & Intermediate files
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+arm64/
+[Aa]rtifacts/
+[Pp]ublish/
+[Tt]estResults/
+[Bw]inAppPackages/
+AppPackages/
+BundleArtifacts/
+
+# Visual Studio & IDE files
+.vs/
+.vscode/
+.idea/
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+*.userlibraries
+*.cache
+
+# Databases & Local Data
+*.db
+*.sqlite
+*.sqlite3
+*.sdf
+*.mdf
+*.ldf
+
+# Logs & Scratch Text Output Files
+logs/
+*.log
+*.binlog
+*.txt.log
+build_errors.txt
+build_output.txt
+crash_navigation.txt
+crash_window.txt
+stderr.txt
+stdout.txt
+xaml_error.txt
+xaml_out.txt
+
+# OS & Temp Files
+[Tt]emp/
+[Tt]mp/
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.stackdump
+
+# Environment & Secrets
+.env
+.env.*
+*.pfx
+*.p12
+*.key
+*.pem
+*.cer
+*.crt
+appsettings*.Development.json
+appsettings*.Local.json
+appsettings.Production.json
+appsettings.Secret.json

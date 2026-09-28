@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Finexa_App.Views.InvoiceEditorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:entities="using:Finexa.Domain.Entities"
+    xmlns:local="using:Finexa_App.Views"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!-- Header / Title Bar -->
+            <RowDefinition Height="*" />    <!-- Content Area (Scrollable) -->
+            <RowDefinition Height="Auto" /> <!-- Action Footer -->
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,0,0,1" Padding="24,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button Click="CancelButton_Click" Background="Transparent" BorderThickness="0" VerticalAlignment="Center">
+                    <FontIcon Glyph="&#xE72B;" FontSize="16" />
+                </Button>
+                <TextBlock Grid.Column="1" Text="{x:Bind ViewModel.Title, Mode=OneWay}" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center" Margin="12,0,0,0" />
+            </Grid>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="24" Padding="24">
+                
+                <!-- Error Alert Box -->
+                <InfoBar x:Name="ErrorBar" Title="Validation Error" Message="{Binding ViewModel.ErrorMessage}" Severity="Error" IsOpen="{Binding ViewModel.HasError}" />
+
+                <!-- Card 1: Billing & Invoice Metadata -->
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
+                    <Grid RowSpacing="16" ColumnSpacing="24">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Customer Selection -->
+                        <StackPanel Grid.Row="0" Grid.Column="0" Spacing="6">
+                            <TextBlock Text="Customer *" FontSize="12" FontWeight="SemiBold" />
+                            <ComboBox ItemsSource="{Binding ViewModel.Parties}" SelectedItem="{Binding ViewModel.SelectedParty, Mode=TwoWay}" DisplayMemberPath="Name" HorizontalAlignment="Stretch" PlaceholderText="Select Customer" />
+                        </StackPanel>
+
+                        <!-- Invoice Number (Read Only) -->
+                        <StackPanel Grid.Row="0" Grid.Column="1" Spacing="6">
+                            <TextBlock Text="Invoice Number" FontSize="12" FontWeight="SemiBold" />
+                            <TextBox Text="{Binding ViewModel.Invoice.InvoiceNumber, Mode=OneWay}" IsReadOnly="True" />
+                        </StackPanel>
+
+                        <!-- Invoice Date -->
+                        <StackPanel Grid.Row="0" Grid.Column="2" Spacing="6">
+                            <TextBlock Text="Invoice Date" FontSize="12" FontWeight="SemiBold" />
+                            <CalendarDatePicker Date="{Binding ViewModel.Invoice.InvoiceDate, Mode=TwoWay, Converter={StaticResource DateTimeOffsetConverter}}" HorizontalAlignment="Stretch" />
+                        </StackPanel>
+
+                        <!-- Payment Method -->
+                        <StackPanel Grid.Row="1" Grid.Column="0" Spacing="6">
+                            <TextBlock Text="Payment Method" FontSize="12" FontWeight="SemiBold" />
+                            <ComboBox SelectedValue="{Binding ViewModel.Invoice.PaymentMethod, Mode=TwoWay}" SelectedValuePath="Content" HorizontalAlignment="Stretch">
+                                <ComboBoxItem Content="Cash" />
+                                <ComboBoxItem Content="Bank" />
+                                <ComboBoxItem Content="UPI" />
+                                <ComboBoxItem Content="Card" />
+                                <ComboBoxItem Content="Cheque" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <!-- Payment Status -->
+                        <StackPanel Grid.Row="1" Grid.Column="1" Spacing="6">
+                            <TextBlock Text="Payment Status" FontSize="12" FontWeight="SemiBold" />
+                            <ComboBox SelectedValue="{Binding ViewModel.Invoice.PaymentStatus, Mode=TwoWay}" SelectedValuePath="Content" HorizontalAlignment="Stretch">
+                                <ComboBoxItem Content="Unpaid" />
+                                <ComboBoxItem Content="Paid" />
+                                <ComboBoxItem Content="Partial" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <!-- Draft / Save State -->
+                        <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center" Margin="0,16,0,0">
+                            <ToggleSwitch Header="Draft Invoice Mode" IsOn="{Binding ViewModel.Invoice.IsDraft, Mode=TwoWay}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Card 2: Line Items -->
+                <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="Invoice Items" FontSize="16" FontWeight="SemiBold" />
+
+                        <!-- Add Item Controls -->
+                        <Grid ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <ComboBox Grid.Column="0" ItemsSource="{Binding ViewModel.Products}" SelectedItem="{Binding ViewModel.SelectedProductToAdd, Mode=TwoWay}" DisplayMemberPath="Name" HorizontalAlignment="Stretch" PlaceholderText="Search and select product to add..." />
+                            <Button Grid.Column="1" Command="{Binding ViewModel.AddProductItemCommand}" Style="{ThemeResource AccentButtonStyle}" Padding="16,6">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <FontIcon Glyph="&#xE710;" FontSize="12" />
+                                    <TextBlock Text="Add Item" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <!-- Line Items DataGrid -->
+                        <controls:DataGrid x:Name="ItemsGrid"
+                                           AutoGenerateColumns="False"
+                                           ItemsSource="{Binding ViewModel.InvoiceItems}"
+                                           GridLinesVisibility="Horizontal"
+                                           CanUserResizeColumns="True"
+                                           IsReadOnly="False"
+                                           HorizontalAlignment="Stretch"
+                                           Height="240">
+                            <controls:DataGrid.Columns>
+                                <controls:DataGridTextColumn Header="Code" Binding="{Binding Product.Code}" IsReadOnly="True" Width="100" />
+                                <controls:DataGridTextColumn Header="Product / Service" Binding="{Binding Product.Name}" IsReadOnly="True" Width="220" />
+                                
+                                <!-- Quantity (Editable template) -->
+                                <controls:DataGridTemplateColumn Header="Qty" Width="90">
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Quantity}" VerticalAlignment="Center" Margin="8,0" />
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                    <controls:DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                     LostFocus="ItemGridCell_LostFocus" 
+                                                     Height="32" />
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellEditingTemplate>
+                                </controls:DataGridTemplateColumn>
+
+                                <!-- Price (Editable template) -->
+                                <controls:DataGridTemplateColumn Header="Unit Price (INR)" Width="120">
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding UnitPrice, Converter={StaticResource CurrencyFormatter}}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0" />
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                    <controls:DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding UnitPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                     LostFocus="ItemGridCell_LostFocus" 
+                                                     Height="32" />
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellEditingTemplate>
+                                </controls:DataGridTemplateColumn>
+
+                                <!-- Discount % (Editable template) -->
+                                <controls:DataGridTemplateColumn Header="Disc %" Width="90">
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding DiscountPercent}" VerticalAlignment="Center" Margin="8,0" />
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                    <controls:DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding DiscountPercent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                     LostFocus="ItemGridCell_LostFocus" 
+                                                     Height="32" />
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellEditingTemplate>
+                                </controls:DataGridTemplateColumn>
+
+                                <!-- GST Rate % -->
+                                <controls:DataGridTemplateColumn Header="GST %" Width="90">
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding TaxPercent}" VerticalAlignment="Center" Margin="8,0" />
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                    <controls:DataGridTemplateColumn.CellEditingTemplate>
+                                        <DataTemplate>
+                                            <TextBox Text="{Binding TaxPercent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                     LostFocus="ItemGridCell_LostFocus" 
+                                                     Height="32" />
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellEditingTemplate>
+                                </controls:DataGridTemplateColumn>
+
+                                <!-- Tax Amount -->
+                                <controls:DataGridTemplateColumn Header="Tax Amount" Width="100">
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding TaxAmount, Converter={StaticResource CurrencyFormatter}}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0" />
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                </controls:DataGridTemplateColumn>
+
+                                <!-- Total Amount -->
+                                <controls:DataGridTemplateColumn Header="Line Total" Width="120">
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding TotalAmount, Converter={StaticResource CurrencyFormatter}}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0" />
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                </controls:DataGridTemplateColumn>
+
+                                <!-- Action Buttons -->
+                                <controls:DataGridTemplateColumn Header="Actions" Width="80">
+                                    <controls:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Click="RemoveItemButton_Click" Padding="4" Background="Transparent" BorderThickness="0" HorizontalAlignment="Center">
+                                                <FontIcon Glyph="&#xE74D;" FontSize="12" Foreground="{ThemeResource SystemFillColorCriticalBrush}" />
+                                            </Button>
+                                        </DataTemplate>
+                                    </controls:DataGridTemplateColumn.CellTemplate>
+                                </controls:DataGridTemplateColumn>
+                            </controls:DataGrid.Columns>
+                        </controls:DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Bottom Layout: Notes & Summary Totals -->
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Invoice Remarks and Terms" FontSize="14" FontWeight="SemiBold" />
+                    <TextBox Text="{Binding ViewModel.Invoice.Notes, Mode=TwoWay}" PlaceholderText="Add internal billing notes or customer remarks..." TextWrapping="Wrap" AcceptsReturn="True" Height="100" />
+                    
+                    <StackPanel Spacing="8" HorizontalAlignment="Right" Width="320">
+                        <Grid>
+                            <TextBlock Text="Subtotal:" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding ViewModel.Invoice.SubTotal, Mode=OneWay, Converter={StaticResource CurrencyFormatter}}" HorizontalAlignment="Right" />
+                        </Grid>
+                        <Grid>
+                            <TextBlock Text="Discount Amount:" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding ViewModel.Invoice.DiscountAmount, Mode=OneWay, Converter={StaticResource NegativeCurrencyFormatter}}" HorizontalAlignment="Right" />
+                        </Grid>
+                        <Grid>
+                            <TextBlock Text="GST Tax Total:" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding ViewModel.Invoice.TaxAmount, Mode=OneWay, Converter={StaticResource CurrencyFormatter}}" HorizontalAlignment="Right" />
+                        </Grid>
+                        <Grid>
+                            <TextBlock Text="Shipping Charges:" VerticalAlignment="Center" />
+                            <NumberBox Value="{Binding ViewModel.Invoice.ShippingCharges, Mode=TwoWay, Converter={StaticResource DecimalToDoubleConverter}}" LostFocus="ShippingCharges_LostFocus" SpinButtonPlacementMode="Compact" SmallChange="50" Width="120" HorizontalAlignment="Right" />
+                        </Grid>
+                        <Grid>
+                            <TextBlock Text="Round Off:" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding ViewModel.Invoice.RoundOff, Mode=OneWay, Converter={StaticResource CurrencyFormatter}}" HorizontalAlignment="Right" />
+                        </Grid>
+                        <Border BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Padding="0,8,0,0">
+                            <Grid>
+                                <TextBlock Text="Grand Total:" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding ViewModel.Invoice.TotalAmount, Mode=OneWay, Converter={StaticResource CurrencyFormatter}}" FontWeight="Bold" FontSize="18" HorizontalAlignment="Right" />
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Action Footer -->
+        <Border Grid.Row="2" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Padding="24,12">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+                <Button Command="{Binding ViewModel.CancelCommand}" Content="Cancel" Width="100" />
+                <Button Command="{Binding ViewModel.SaveInvoiceCommand}" Content="Save Invoice" Style="{ThemeResource AccentButtonStyle}" Width="130" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>

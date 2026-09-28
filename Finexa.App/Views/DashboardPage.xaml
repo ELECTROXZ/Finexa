@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="Finexa_App.Views.DashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:Finexa_App.Views"
+    xmlns:entities="using:Finexa.Domain.Entities"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="24" Padding="24">
+            <!-- Row 1: KPI Cards Grid -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Financial Overview" FontSize="20" FontWeight="SemiBold" />
+                <GridView x:Name="KpiGridView" 
+                          SelectionMode="None" 
+                          IsItemClickEnabled="False"
+                          HorizontalAlignment="Stretch">
+                    <GridView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid Orientation="Horizontal" MaximumRowsOrColumns="5" />
+                        </ItemsPanelTemplate>
+                    </GridView.ItemsPanel>
+                    
+                    <GridView.Items>
+                        <!-- Today's Sales -->
+                        <Border Width="220" Height="100" Margin="0,0,12,12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="Today's Sales" FontSize="12" Opacity="0.6" />
+                                    <TextBlock Text="{x:Bind local:DashboardPage.FormatCurrency(ViewModel.TodaySales), Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="1" Glyph="&#xE8A9;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Today's Purchases -->
+                        <Border Width="220" Height="100" Margin="0,0,12,12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="Today's Purchases" FontSize="12" Opacity="0.6" />
+                                    <TextBlock Text="{x:Bind local:DashboardPage.FormatCurrency(ViewModel.TodayPurchases), Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="1" Glyph="&#xE8AB;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Monthly Profit -->
+                        <Border Width="220" Height="100" Margin="0,0,12,12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="Monthly Profit" FontSize="12" Opacity="0.6" />
+                                    <TextBlock Text="{x:Bind local:DashboardPage.FormatCurrency(ViewModel.MonthlyProfit), Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="1" Glyph="&#xE150;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Cash Balance -->
+                        <Border Width="220" Height="100" Margin="0,0,12,12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="Cash Balance" FontSize="12" Opacity="0.6" />
+                                    <TextBlock Text="{x:Bind local:DashboardPage.FormatCurrency(ViewModel.CashBalance), Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="1" Glyph="&#xE8C7;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Bank Balance -->
+                        <Border Width="220" Height="100" Margin="0,0,12,12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="Bank Balance" FontSize="12" Opacity="0.6" />
+                                    <TextBlock Text="{x:Bind local:DashboardPage.FormatCurrency(ViewModel.BankBalance), Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="1" Glyph="&#xE8A1;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Outstanding Receivables -->
+                        <Border Width="220" Height="100" Margin="0,0,12,12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="Receivables" FontSize="12" Opacity="0.6" />
+                                    <TextBlock Text="{x:Bind local:DashboardPage.FormatCurrency(ViewModel.OutstandingReceivables), Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="1" Glyph="&#xEB4D;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Outstanding Payables -->
+                        <Border Width="220" Height="100" Margin="0,0,12,12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="Payables" FontSize="12" Opacity="0.6" />
+                                    <TextBlock Text="{x:Bind local:DashboardPage.FormatCurrency(ViewModel.OutstandingPayables), Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="1" Glyph="&#xED25;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Inventory Valuation -->
+                        <Border Width="220" Height="100" Margin="0,0,12,12" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="Inventory Value" FontSize="12" Opacity="0.6" />
+                                    <TextBlock Text="{x:Bind local:DashboardPage.FormatCurrency(ViewModel.InventoryValue), Mode=OneWay}" FontSize="20" FontWeight="Bold" Margin="0,4,0,0" />
+                                </StackPanel>
+                                <FontIcon Grid.Column="1" Glyph="&#xE81E;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                    </GridView.Items>
+                </GridView>
+            </StackPanel>
+
+            <!-- Row 2: Recent Transactions vs Low Stock Alerts -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="350" />
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Column 0: Recent Transactions -->
+                <StackPanel Grid.Column="0" Spacing="12">
+                    <TextBlock Text="Recent Transactions" FontSize="18" FontWeight="SemiBold" />
+                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="12" Padding="16">
+                        <ListView ItemsSource="{x:Bind ViewModel.RecentTransactions, Mode=OneWay}" SelectionMode="None" IsItemClickEnabled="False">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="entities:LedgerTransaction">
+                                    <Grid Margin="0,6" Height="40">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Indicator Icon -->
+                                        <Border Grid.Column="0" Width="32" Height="32" CornerRadius="6" Background="{x:Bind local:DashboardPage.GetTransactionBg(TransactionType)}" VerticalAlignment="Center">
+                                            <FontIcon Glyph="{x:Bind local:DashboardPage.GetTransactionGlyph(TransactionType)}" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{x:Bind local:DashboardPage.GetTransactionColor(TransactionType)}" />
+                                        </Border>
+
+                                        <!-- Details -->
+                                        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{x:Bind Party.Name, Mode=OneWay}" FontWeight="SemiBold" FontSize="12" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{x:Bind Description, Mode=OneWay}" FontSize="10" Opacity="0.5" TextTrimming="CharacterEllipsis" />
+                                        </StackPanel>
+
+                                        <!-- Amount -->
+                                        <TextBlock Grid.Column="2" 
+                                                   Text="{x:Bind local:DashboardPage.FormatAmount(Amount, TransactionType)}" 
+                                                   Foreground="{x:Bind local:DashboardPage.GetTransactionColor(TransactionType)}" 
+                                                   FontWeight="SemiBold" 
+                                                   FontSize="12" 
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+                </StackPanel>
+
+                <!-- Column 2: Low Stock Alerts -->
+                <StackPanel Grid.Column="2" Spacing="12">
+                    <TextBlock Text="Low Stock Alerts" FontSize="18" FontWeight="SemiBold" />
+                    <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="12" Padding="16">
+                        <ListView ItemsSource="{x:Bind ViewModel.LowStockProducts, Mode=OneWay}" SelectionMode="None" IsItemClickEnabled="False">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="entities:Product">
+                                    <Grid Margin="0,6" Height="40">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Details -->
+                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" FontWeight="SemiBold" FontSize="12" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{x:Bind Code, Mode=OneWay}" FontSize="10" Opacity="0.5" />
+                                        </StackPanel>
+
+                                        <!-- Minimum Required Stock -->
+                                        <TextBlock Grid.Column="1" 
+                                                   Text="{x:Bind local:DashboardPage.FormatMinStock(MinStock)}" 
+                                                   FontSize="11" 
+                                                   Opacity="0.6" 
+                                                   VerticalAlignment="Center" 
+                                                   Margin="0,0,16,0" />
+
+                                        <!-- Current Stock Level Badge -->
+                                        <Border Grid.Column="2" Padding="8,4" CornerRadius="6" Background="{ThemeResource SystemFillColorCautionBackgroundBrush}" BorderBrush="{ThemeResource SystemFillColorCautionBrush}" BorderThickness="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <TextBlock Text="{x:Bind Stock, Mode=OneWay}" Foreground="{ThemeResource SystemFillColorCautionBrush}" FontWeight="SemiBold" FontSize="11" />
+                                                <TextBlock Text="{x:Bind Unit.Name, Mode=OneWay}" Foreground="{ThemeResource SystemFillColorCautionBrush}" FontWeight="SemiBold" FontSize="11" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

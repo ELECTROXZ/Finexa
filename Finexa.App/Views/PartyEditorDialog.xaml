@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentDialog
+    x:Class="Finexa_App.Views.PartyEditorDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Party Account Details"
+    PrimaryButtonText="Save Details"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    MinWidth="650">
+
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!-- Validation Errors -->
+            <RowDefinition Height="*" />    <!-- Tabs / Form Content -->
+        </Grid.RowDefinitions>
+
+        <!-- Validation Errors Summary -->
+        <Border Grid.Row="0" x:Name="ErrorBorder" Background="#40FF3333" BorderBrush="#80FF3333" BorderThickness="1" CornerRadius="4" Padding="12,8" Margin="0,0,0,16" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <FontIcon Glyph="&#xE783;" Foreground="Red" FontSize="14" VerticalAlignment="Center" />
+                <TextBlock x:Name="ErrorText" Foreground="Red" FontSize="12" TextWrapping="Wrap" MaxWidth="580" VerticalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+        <!-- Form Pivot -->
+        <Pivot Grid.Row="1" Width="600" Height="400">
+            <!-- Tab 1: Profile & Contacts -->
+            <PivotItem Header="General Info">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Padding="4,12" ColumnSpacing="16" RowSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Business Name -->
+                        <TextBox Grid.Row="0" Grid.Column="0" x:Name="BusinessNameBox" Header="Business Name / Company *" PlaceholderText="Enter business name" MaxLength="150" />
+
+                        <!-- Display Name -->
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="DisplayNameBox" Header="Display / Trading Name" PlaceholderText="Trading name if different" MaxLength="150" />
+
+                        <!-- Party Type -->
+                        <ComboBox Grid.Row="1" Grid.Column="0" x:Name="TypeCombo" Header="Relationship Type *" HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="Customer" IsSelected="True" />
+                            <ComboBoxItem Content="Supplier" />
+                            <ComboBoxItem Content="Both" />
+                        </ComboBox>
+
+                        <!-- Contact Person -->
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="ContactPersonBox" Header="Primary Contact Person" PlaceholderText="Contact person name" MaxLength="100" />
+
+                        <!-- Phone -->
+                        <TextBox Grid.Row="2" Grid.Column="0" x:Name="PhoneBox" Header="Phone Number" PlaceholderText="Primary phone" InputScope="Telephone" MaxLength="15" />
+
+                        <!-- Alternative Phone -->
+                        <TextBox Grid.Row="2" Grid.Column="1" x:Name="AltPhoneBox" Header="Alternative Phone" PlaceholderText="Backup phone" InputScope="Telephone" MaxLength="15" />
+
+                        <!-- Email -->
+                        <TextBox Grid.Row="3" Grid.Column="0" x:Name="EmailBox" Header="Email Address" PlaceholderText="Primary email" InputScope="EmailSmtpAddress" MaxLength="100" />
+
+                        <!-- Website -->
+                        <TextBox Grid.Row="3" Grid.Column="1" x:Name="WebsiteBox" Header="Website URL" PlaceholderText="www.example.com" InputScope="Url" MaxLength="100" />
+
+                        <!-- Status -->
+                        <ComboBox Grid.Row="4" Grid.Column="0" x:Name="StatusCombo" Header="Account Status" HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="Active" IsSelected="True" />
+                            <ComboBoxItem Content="Inactive" />
+                            <ComboBoxItem Content="Blocked" />
+                        </ComboBox>
+                    </Grid>
+                </ScrollViewer>
+            </PivotItem>
+
+            <!-- Tab 2: Taxation & Location -->
+            <PivotItem Header="Taxation &amp; Address">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Padding="4,12" ColumnSpacing="16" RowSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- GSTIN -->
+                        <TextBox Grid.Row="0" Grid.Column="0" x:Name="GstinBox" Header="GST Number (GSTIN)" PlaceholderText="15-digit GSTIN" MaxLength="15" />
+
+                        <!-- PAN -->
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="PanBox" Header="PAN Number" PlaceholderText="10-digit Permanent Account Num" MaxLength="10" />
+
+                        <!-- Aadhaar -->
+                        <TextBox Grid.Row="1" Grid.Column="0" x:Name="AadhaarBox" Header="Aadhaar (Optional)" PlaceholderText="12-digit Aadhaar number" MaxLength="12" />
+
+                        <!-- Business Registration Number -->
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="BrnBox" Header="Business Reg Number (BRN)" PlaceholderText="CIN, Udyam, or Partnership Reg" MaxLength="50" />
+
+                        <!-- Address Line 1 -->
+                        <TextBox Grid.Row="2" Grid.ColumnSpan="2" x:Name="Address1Box" Header="Address Line 1" PlaceholderText="Flat, Suite, Street name" MaxLength="200" />
+
+                        <!-- Address Line 2 -->
+                        <TextBox Grid.Row="3" Grid.ColumnSpan="2" x:Name="Address2Box" Header="Address Line 2" PlaceholderText="Area, Landmark, Locality" MaxLength="200" />
+
+                        <!-- City -->
+                        <TextBox Grid.Row="4" Grid.Column="0" x:Name="CityBox" Header="City / Town" PlaceholderText="City" MaxLength="50" />
+
+                        <!-- State -->
+                        <TextBox Grid.Row="4" Grid.Column="1" x:Name="StateBox" Header="State" PlaceholderText="State" MaxLength="50" />
+                    </Grid>
+                </ScrollViewer>
+            </PivotItem>
+
+            <!-- Tab 3: Financial Mappings -->
+            <PivotItem Header="Finance &amp; Notes">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Padding="4,12" ColumnSpacing="16" RowSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Country -->
+                        <TextBox Grid.Row="0" Grid.Column="0" x:Name="CountryBox" Header="Country" PlaceholderText="Country" Text="India" MaxLength="50" />
+
+                        <!-- Pincode -->
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="PincodeBox" Header="Pincode / Zipcode" PlaceholderText="6-digit PIN" InputScope="Numeric" MaxLength="10" />
+
+                        <!-- Opening Balance -->
+                        <NumberBox Grid.Row="1" Grid.Column="0" x:Name="OpeningBalanceBox" Header="Opening Balance (+ for Dr, - for Cr)" Value="0.00" SmallChange="10" LargeChange="100" />
+
+                        <!-- Credit Limit -->
+                        <NumberBox Grid.Row="1" Grid.Column="1" x:Name="CreditLimitBox" Header="Credit Limit (Set 0 for Unlimited)" Value="0.00" SmallChange="500" LargeChange="5000" />
+
+                        <!-- Payment Terms -->
+                        <ComboBox Grid.Row="2" Grid.Column="0" x:Name="PaymentTermsCombo" Header="Payment Terms" HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="COD" IsSelected="True" />
+                            <ComboBoxItem Content="Net 15" />
+                            <ComboBoxItem Content="Net 30" />
+                            <ComboBoxItem Content="Net 45" />
+                            <ComboBoxItem Content="Net 60" />
+                        </ComboBox>
+
+                        <!-- Preferred Payment Method -->
+                        <ComboBox Grid.Row="2" Grid.Column="1" x:Name="PaymentMethodCombo" Header="Preferred Payment Method" HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="Cash" IsSelected="True" />
+                            <ComboBoxItem Content="Bank Transfer" />
+                            <ComboBoxItem Content="Cheque" />
+                            <ComboBoxItem Content="UPI" />
+                            <ComboBoxItem Content="Credit Card" />
+                        </ComboBox>
+
+                        <!-- Notes -->
+                        <TextBox Grid.Row="3" Grid.ColumnSpan="2" x:Name="NotesBox" Header="Remarks / Internal Notes" PlaceholderText="Add internal details, billing notes, credit status remarks..." TextWrapping="Wrap" AcceptsReturn="True" Height="80" MaxLength="500" />
+                    </Grid>
+                </ScrollViewer>
+            </PivotItem>
+        </Pivot>
+    </Grid>
+</ContentDialog>

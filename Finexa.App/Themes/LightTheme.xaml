@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="FinexaBackgroundBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="FinexaCardBrush" Color="#F3F3F3" />
+    <SolidColorBrush x:Key="FinexaBorderBrush" Color="#E5E5E5" />
+    <SolidColorBrush x:Key="FinexaTextBrush" Color="#1A1A1A" />
+    <SolidColorBrush x:Key="FinexaAccentBrush" Color="#2196F3" />
+    <SolidColorBrush x:Key="FinexaListDividerBrush" Color="#E5E5E5" />
+    <SolidColorBrush x:Key="SystemFillColorCriticalBrush" Color="#C53929" />
+    <SolidColorBrush x:Key="SystemFillColorDangerBrush" Color="#C53929" />
+</ResourceDictionary>

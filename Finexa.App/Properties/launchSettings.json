@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Finexa.App (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Finexa.App (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
